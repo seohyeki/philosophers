@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:43:58 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/03/22 23:01:08 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/03/23 16:26:55 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,11 @@ typedef struct s_data
 
 typedef struct s_philo
 {
-	int	last_eat_time;
+	int	last_eat_time; //가장 마지막으로 먹기 시작한 시간
 	int	eat_count;
 }				t_philo;
+
+long long ft_atoi(char *str);
+void	*philo_routine(t_philo *philo);
 
 #endif
