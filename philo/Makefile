@@ -6,16 +6,17 @@
 #    By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/17 18:38:57 by seohyeki          #+#    #+#              #
-#    Updated: 2024/03/22 19:11:19 by seohyeki         ###   ########.fr        #
+#    Updated: 2024/04/03 21:49:57 by seohyeki         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-SRCS = main.c
+SRCS =	philo_ft_atoi.c \
+		philo_main.c
 OBJS = $(SRCS:.c=.o)
 CFLAGS = -Wall -Wextra -Werror
 
-all : $(NAME) $(CLIENT)
+all : $(NAME)
 
 $(NAME) : $(OBJS)
 	cc $(CFLAGS) -o $@ $^

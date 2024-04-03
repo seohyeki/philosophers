@@ -6,78 +6,120 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/03/23 22:29:14 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/03 21:48:37 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <stdio.h>
+#include <sys/time.h>
 
-void *act(void *data)
+long	get_time()
 {
-    int id;
-    int i = 0;
-    id = *((int *)data);
+	struct timeval time;
 
-    while(1)
-    {
-        printf("%d : %d\n", id, i);
-        i++;
-        sleep(1);
-    }
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int check_invalid_args(char **argv)
+void *act(void *args)
+{
+	t_philo_data data = *(t_philo_data *)args;;
+	printf("Thread %d\n", data.id);
+	printf("Thread %d left fork is %d\n", data.id, data.left);
+	printf("Thread %d right fork is %d\n", data.id, data.right);
+	return (0);
+}
+
+int	init_args(t_data *args, int argc, char **argv)
+{
+	struct timeval start;
+	
+	args->philo_num = (int)ft_atoi(argv[1]);
+	args->alive_time = (int)ft_atoi(argv[2]);
+	args->eat_time = (int)ft_atoi(argv[3]);
+	args->sleep_time = (int)ft_atoi(argv[4]);
+	if (args->philo_num <= 0 || args->alive_time < 0
+		|| args->eat_time < 0 || args->sleep_time < 0)
+		return (1);
+	if (argc == 6)
+	{
+		args->must_eat = (int)ft_atoi(argv[5]);
+		if (args->must_eat <= 0)
+			return (1);
+	}
+	else
+		args->must_eat = 0;
+	args->time = get_time();
+	return (0);
+}
+
+int init_mutex(t_data *args)
 {
 	int	i;
-
-	i = 1;
-	while (argv[i])
+	
+	i = 0;
+	args->fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * (args->philo_num));
+	if (!args->fork)
+		return (1);
+	while (i < args->philo_num)
 	{
-		if (ft_atoi(argv[i]) == -1)
+		if (pthread_mutex_init(&args->fork[i], NULL) != 0)
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-int	init_data(t_data *philo, char **argv)
+int init_philo(t_data *args, t_philo_data **philo)
 {
-	if (check_invalid_args(argv))
+	int	i;
+	
+	i = 0;
+	*philo = (t_philo_data *)malloc(sizeof(t_philo_data) * (args->philo_num));
+	if (!(*philo))
 		return (1);
-	philo->num_of_philo = (int)ft_atoi(argv[1]);
-	philo->time_to_die = (int)ft_atoi(argv[2]);
-	philo->time_to_eat = (int)ft_atoi(argv[3]);
-	philo->time_to_sleep = (int)ft_atoi(argv[4]);
-	philo->must_eat = (int)ft_atoi(argv[5]);
+	while (i < args->philo_num)
+	{
+		(*philo)[i].id = i + 1;
+		(*philo)[i].left = i;
+		(*philo)[i].right = (i + 1) % args->philo_num;
+		(*philo)[i].eat_count = 0;
+		i++;
+	}
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	struct timeval	time;
-	t_data			data;
+	t_data			args;
+	t_philo_data	*philo_data;
 	pthread_t		*philo;
 	int				i;
-	int				status;
 
 	if (argc != 5 && argc != 6)
 		return (1);
-	gettimeofday(&time, NULL);
-	if (init_data(&data, argv))
+	if (init_args(&args, argc, argv))
 		return (1);
+	if (init_philo(&args, &philo_data)) //malloc 실패
+		return (1);
+	if (init_mutex(&args)) //malloc 실패 혹은 mutex intit 실패
+		return (1);
+	printf("time %ld\n", args.time);
+	//thread create
+	philo = (pthread_t *)malloc(sizeof(pthread_t) * (args.philo_num));
 	i = 0;
-	philo = (pthread_t *)malloc(sizeof(pthread_t) * (data.num_of_philo));
-	// pthread_create(&philo[i], NULL, act, &i);
-	while (i < data.num_of_philo)
+	while (i < args.philo_num)
 	{
-		pthread_create(&philo[i], NULL, act, (void *)&i);
+		pthread_create(&philo[i], NULL, act, &philo_data[i]);
 		i++;
 	}
-	/*출력*/
-	// printf("num_of_philo: %d\n", data.num_of_philo);
-	// printf("time_to_die: %d\n", data.time_to_die);
-	// printf("time_to_eat: %d\n", data.time_to_eat);
-	// printf("time_to_sleep: %d\n", data.time_to_sleep);
-	// printf("must_eat: %d\n", data.must_eat);
+	//thread 끝나는거 확인
+	i = 0;
+	while (i < args.philo_num)
+	{
+		pthread_join(philo[i], NULL);
+		i++;
+	}
 	return (0);
 }
