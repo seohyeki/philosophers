@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/03/23 16:04:00 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:57:08 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ static int	ft_isdigit(char c)
 	return (0);
 }
 
-long long ft_atoi(char *str)
+long long	ft_atoi(char *str)
 {
 	long long	num;
-	
+
 	num = 0;
 	if (str == 0)
 		return (-1);

@@ -6,94 +6,85 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/03 21:48:37 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:35:33 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <stdio.h>
-#include <sys/time.h>
+#include <pthread.h>
+#include <unistd.h>
 
-long	get_time()
+long	get_time(long t)
 {
 	struct timeval time;
 
 	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000) - t);
 }
 
-void *act(void *args)
+void *act1(void *arg)
 {
-	t_philo_data data = *(t_philo_data *)args;;
-	printf("Thread %d\n", data.id);
-	printf("Thread %d left fork is %d\n", data.id, data.left);
-	printf("Thread %d right fork is %d\n", data.id, data.right);
+	t_philo_info *info = (t_philo_info *)arg;
+	t_args	*args = info->args;
+
+	pthread_mutex_lock(&args->fork[info->left]);
+	
+	pthread_mutex_lock(&args->printf);
+	printf("%ld %d has taken a fork\n", get_time(args->start), info->id);
+	pthread_mutex_unlock(&args->printf);
+	
+	pthread_mutex_lock(&args->fork[info->right]);
+	
+	pthread_mutex_lock(&args->printf);
+	printf("%ld %d has taken a fork\n", get_time(args->start), info->id);
+	pthread_mutex_unlock(&args->printf);
+	
+	pthread_mutex_lock(&args->printf);
+	printf("%ld %d is eating\n", get_time(args->start), info->id);
+	pthread_mutex_unlock(&args->printf);
+	
+	usleep(args->eat_time * 1000);
+	
+	pthread_mutex_unlock(&args->fork[info->left]);
+	pthread_mutex_unlock(&args->fork[info->right]);
 	return (0);
 }
 
-int	init_args(t_data *args, int argc, char **argv)
+void *act2(void *arg)
 {
-	struct timeval start;
-	
-	args->philo_num = (int)ft_atoi(argv[1]);
-	args->alive_time = (int)ft_atoi(argv[2]);
-	args->eat_time = (int)ft_atoi(argv[3]);
-	args->sleep_time = (int)ft_atoi(argv[4]);
-	if (args->philo_num <= 0 || args->alive_time < 0
-		|| args->eat_time < 0 || args->sleep_time < 0)
-		return (1);
-	if (argc == 6)
-	{
-		args->must_eat = (int)ft_atoi(argv[5]);
-		if (args->must_eat <= 0)
-			return (1);
-	}
-	else
-		args->must_eat = 0;
-	args->time = get_time();
-	return (0);
-}
+	t_philo_info *info = (t_philo_info *)arg;
+	t_args	*args = info->args;
+	long	ms;
 
-int init_mutex(t_data *args)
-{
-	int	i;
+	usleep(10);
+	pthread_mutex_lock(&args->fork[info->right]);
 	
-	i = 0;
-	args->fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * (args->philo_num));
-	if (!args->fork)
-		return (1);
-	while (i < args->philo_num)
-	{
-		if (pthread_mutex_init(&args->fork[i], NULL) != 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
+	pthread_mutex_lock(&args->printf);
+	ms = get_time(args->start);
+	printf("%ld %d has taken a fork\n", ms, info->id);
+	pthread_mutex_unlock(&args->printf);
+	
+	pthread_mutex_lock(&args->fork[info->left]);
 
-int init_philo(t_data *args, t_philo_data **philo)
-{
-	int	i;
+	pthread_mutex_lock(&args->printf);
+	printf("%ld %d has taken a fork\n", get_time(args->start), info->id);
+	pthread_mutex_unlock(&args->printf);
 	
-	i = 0;
-	*philo = (t_philo_data *)malloc(sizeof(t_philo_data) * (args->philo_num));
-	if (!(*philo))
-		return (1);
-	while (i < args->philo_num)
-	{
-		(*philo)[i].id = i + 1;
-		(*philo)[i].left = i;
-		(*philo)[i].right = (i + 1) % args->philo_num;
-		(*philo)[i].eat_count = 0;
-		i++;
-	}
+	pthread_mutex_lock(&args->printf);
+	printf("%ld %d is eating\n", get_time(args->start), info->id);
+	pthread_mutex_unlock(&args->printf);
+
+	usleep(args->eat_time * 1000);
+
+	pthread_mutex_unlock(&args->fork[info->right]);
+	pthread_mutex_unlock(&args->fork[info->left]);
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	t_data			args;
-	t_philo_data	*philo_data;
+	t_args			args;
+	t_philo_info	*info;
 	pthread_t		*philo;
 	int				i;
 
@@ -101,20 +92,23 @@ int	main(int argc, char **argv)
 		return (1);
 	if (init_args(&args, argc, argv))
 		return (1);
-	if (init_philo(&args, &philo_data)) //malloc 실패
+	if (init_philo_info(&args, &info))
 		return (1);
-	if (init_mutex(&args)) //malloc 실패 혹은 mutex intit 실패
+	if (init_mutex(&args)) //free philo_data, mutex intit 실패시 free fork
 		return (1);
-	printf("time %ld\n", args.time);
+	args.start = get_time(0);
 	//thread create
 	philo = (pthread_t *)malloc(sizeof(pthread_t) * (args.philo_num));
 	i = 0;
 	while (i < args.philo_num)
 	{
-		pthread_create(&philo[i], NULL, act, &philo_data[i]);
+		if (i % 2 == 0)
+			pthread_create(&philo[i], NULL, act1, &info[i]);
+		else
+			pthread_create(&philo[i], NULL, act2, &info[i]);
 		i++;
 	}
-	//thread 끝나는거 확인
+	//thread finish(pthread_mutex_destroy도 하기)
 	i = 0;
 	while (i < args.philo_num)
 	{

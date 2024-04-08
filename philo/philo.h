@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:43:58 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/03 21:48:36 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:23:08 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,35 @@
 # include <sys/time.h>
 # include <pthread.h>
 
-typedef struct s_data
+typedef struct s_args
 {
 	int				philo_num;
 	int				alive_time;
 	int				eat_time;
 	int				sleep_time;
 	int				must_eat;
-	long			time;
-	pthread_mutex_t *fork;
-}				t_data;
+	long			start;
+	pthread_mutex_t	*fork;
+	pthread_mutex_t	printf;
+}				t_args;
 
-typedef struct s_philo_data
+typedef struct s_philo_info
 {
-	int	id;
-	int	left;
-	int	right;
-	int	eat_count;
-}				t_philo_data;
+	int		id;
+	int		left;
+	int		right;
+	int		eat_count;
+	long	last_eat;
+	t_args	*args;
+}				t_philo_info;
 
-long long ft_atoi(char *str);
+/*utils*/
+long long	ft_atoi(char *str);
+long		get_time(long t);
+
+/*init*/
+int			init_args(t_args *args, int argc, char **argv);
+int			init_mutex(t_args *args);
+int			init_philo_info(t_args *args, t_philo_info **philo);
 
 #endif
