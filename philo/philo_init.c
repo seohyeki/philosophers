@@ -6,11 +6,12 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:50:11 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/08 20:01:41 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/11 20:50:31 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <stdlib.h>
 
 int	init_args(t_args *args, int argc, char **argv)
 {
@@ -29,44 +30,44 @@ int	init_args(t_args *args, int argc, char **argv)
 	}
 	else
 		args->must_eat = 0;
+	args->start = get_time(0);
 	return (0);
 }
 
 int	init_mutex(t_args *args)
 {
 	int	i;
-
-	i = 0;
-	if (pthread_mutex_init(&args->printf, NULL) != 0)
-		return (1);
-	args->fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * (args->philo_num));
+	pthread_mutex_init(&args->printf, NULL);
+	args->fork = (t_fork *)malloc(sizeof(t_fork) * (args->philo_num));
 	if (!args->fork)
 		return (1);
+	i = 0;
 	while (i < args->philo_num)
 	{
-		if (pthread_mutex_init(&args->fork[i], NULL) != 0)
-			return (1);
+		pthread_mutex_init(&(args->fork[i].mutex), NULL);
+		args->fork[i].used = 0;
 		i++;
 	}
 	return (0);
 }
 
-int	init_philo_info(t_args *args, t_philo_info **philo_info)
+int	init_philo_info(t_args *args, t_philo_info **info)
 {
 	int	i;
 
 	i = 0;
-	*philo_info = (t_philo_info *)malloc(sizeof(t_philo_info) * (args->philo_num));
-	if (!(*philo_info))
+	*info = (t_philo_info *)malloc(sizeof(t_philo_info) * (args->philo_num));
+	if (!(*info))
 		return (1);
 	while (i < args->philo_num)
 	{
-		(*philo_info)[i].id = i + 1;
-		(*philo_info)[i].left = i;
-		(*philo_info)[i].right = (i + 1) % args->philo_num;
-		(*philo_info)[i].eat_count = 0;
-		(*philo_info)[i].last_eat = get_time(0);
-		(*philo_info)[i].args = args;
+		(*info)[i].id = i + 1;
+		(*info)[i].left = i;
+		(*info)[i].right = (i + 1) % args->philo_num;
+		(*info)[i].eat_count = 0;
+		(*info)[i].last_eat = get_time(0);
+		(*info)[i].end_flag = 0;
+		(*info)[i].args = args;
 		i++;
 	}
 	return (0);

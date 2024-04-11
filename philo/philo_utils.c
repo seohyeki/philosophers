@@ -1,14 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_ft_atoi.c                                    :+:      :+:    :+:   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/08 19:57:08 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/11 21:38:01 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "philo.h"
+#include <sys/time.h>
+#include <unistd.h>
 
 static int	ft_isdigit(char c)
 {
@@ -34,4 +38,44 @@ long long	ft_atoi(char *str)
 		str++;
 	}
 	return (num);
+}
+
+long	get_time(long t)
+{
+	struct timeval time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000) - t);
+}
+
+int	ft_sleep(t_philo_info *info, long cur_time, int act_time)
+{
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		if (info->end_flag)
+			return (1);
+		else if (get_time(0) - cur_time >= act_time)
+			break;
+		usleep(5000);
+	}
+	return (0);
+}
+
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	size_t			i;
+	unsigned char	*str1;
+	unsigned char	*str2;
+
+	if (s1 == s2 || n == 0)
+		return (0);
+	i = 0;
+	str1 = (unsigned char *)s1;
+	str2 = (unsigned char *)s2;
+	while ((str1[i] == str2[i]) && (i + 1 < n))
+		i++;
+	return (str1[i] - str2[i]);
 }

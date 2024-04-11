@@ -6,13 +6,15 @@
 #    By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/17 18:38:57 by seohyeki          #+#    #+#              #
-#    Updated: 2024/04/03 21:49:57 by seohyeki         ###   ########.fr        #
+#    Updated: 2024/04/11 22:03:27 by seohyeki         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-SRCS =	philo_ft_atoi.c \
-		philo_main.c
+SRCS =	philo_init.c \
+		philo_main.c \
+		philo_routine.c \
+		philo_utils.c
 OBJS = $(SRCS:.c=.o)
 CFLAGS = -Wall -Wextra -Werror
 
