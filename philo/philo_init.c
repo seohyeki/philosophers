@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:50:11 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/11 20:50:31 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 00:57:19 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,18 @@ int	init_args(t_args *args, int argc, char **argv)
 	}
 	else
 		args->must_eat = 0;
-	args->start = get_time(0);
+	args->start_flag = 0;
+	args->end_flag = 0;
 	return (0);
 }
 
 int	init_mutex(t_args *args)
 {
 	int	i;
+
 	pthread_mutex_init(&args->printf, NULL);
+	pthread_mutex_init(&args->end, NULL);
+	pthread_mutex_init(&args->start, NULL);
 	args->fork = (t_fork *)malloc(sizeof(t_fork) * (args->philo_num));
 	if (!args->fork)
 		return (1);
@@ -65,9 +69,8 @@ int	init_philo_info(t_args *args, t_philo_info **info)
 		(*info)[i].left = i;
 		(*info)[i].right = (i + 1) % args->philo_num;
 		(*info)[i].eat_count = 0;
-		(*info)[i].last_eat = get_time(0);
-		(*info)[i].end_flag = 0;
 		(*info)[i].args = args;
+		pthread_mutex_init(&((*info)[i].count), NULL);
 		i++;
 	}
 	return (0);

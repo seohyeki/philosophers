@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/11 21:38:01 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 01:26:50 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,24 @@ long long	ft_atoi(char *str)
 
 long	get_time(long t)
 {
-	struct timeval time;
+	struct timeval	time;
 
 	gettimeofday(&time, NULL);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000) - t);
 }
 
-int	ft_sleep(t_philo_info *info, long cur_time, int act_time)
+int	ft_sleep(t_philo_info *info, t_args *args, int act_time)
 {
-	int	i;
+	long	start_time;
 
-	i = 0;
+	start_time = get_time(0);
 	while (1)
 	{
-		if (info->end_flag)
+		if (checking(info, args))
 			return (1);
-		else if (get_time(0) - cur_time >= act_time)
-			break;
-		usleep(5000);
+		else if (get_time(0) - start_time >= act_time)
+			break ;
+		usleep(100);
 	}
 	return (0);
 }
