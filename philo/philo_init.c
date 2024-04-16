@@ -6,11 +6,12 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:50:11 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 16:50:26 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:58:13 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <pthread.h>
 #include <stdlib.h>
 
 int	init_args(t_args *args, int argc, char **argv)
@@ -35,7 +36,7 @@ int	init_args(t_args *args, int argc, char **argv)
 	return (0);
 }
 
-int	init_mutex(t_args *args)
+static int	init_mutex(t_args *args)
 {
 	int	i;
 
@@ -74,6 +75,10 @@ int	init_philo_info(t_args *args, t_philo_info **info)
 		i++;
 	}
 	if (init_mutex(args))
+	{
+		pthread_mutex_destroy(&((*info)[i].count));
+		ft_free((void **)info, args->philo_num);
 		return (1);
+	}
 	return (0);
 }

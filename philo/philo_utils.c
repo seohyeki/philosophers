@@ -6,20 +6,14 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 18:01:32 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:56:22 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <sys/time.h>
 #include <unistd.h>
-
-static int	ft_isdigit(char c)
-{
-	if ('0' <= c && c <= '9')
-		return (1);
-	return (0);
-}
+#include <stdlib.h>
 
 long long	ft_atoi(char *str)
 {
@@ -30,7 +24,7 @@ long long	ft_atoi(char *str)
 		return (-1);
 	while (*str)
 	{
-		if (!ft_isdigit(*str))
+		if (*str < '0' || '9' < *str)
 			return (-1);
 		num = num * 10 + *str - '0';
 		if (num > 2147483647)
@@ -48,11 +42,11 @@ long	get_time(long t)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000) - t);
 }
 
-int	ft_sleep(t_philo_info *info, t_args *args, long cur, int act_time)
+int	ft_usleep(t_philo_info *info, t_args *args, long cur, int act_time)
 {
-	while (checking(info, args) == 0)
+	while (check_end(info, args) == 0)
 	{
-		if (get_time(0) - cur >= act_time)
+		if (get_time(cur) >= act_time)
 			return (0);
 		usleep(1500);
 	}
@@ -73,4 +67,26 @@ int	ft_memcmp(const void *s1, const void *s2, size_t n)
 	while ((str1[i] == str2[i]) && (i + 1 < n))
 		i++;
 	return (str1[i] - str2[i]);
+}
+
+void	ft_printf(t_philo_info *info, t_args *args, char *msg)
+{
+	pthread_mutex_lock(&args->printf);
+	pthread_mutex_lock(&args->end);
+	if (args->end_flag == 0)
+		printf("%ld %d %s\n", get_time(args->start_time), info->id, msg);
+	pthread_mutex_unlock(&args->end);
+	pthread_mutex_unlock(&args->printf);
+}
+
+void	ft_free(void **ptr, int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		free(ptr[i]);
+		i++;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 18:25:30 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 19:05:57 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	act_loop(t_args *args, t_philo_info *info)
 				break ;
 			if (sleeping(info, args))
 				break ;
-			usleep(1500);
+			usleep(args->alive_time * 20);
 		}
 	}
 }
@@ -55,7 +55,7 @@ void	*acting(void *arg)
 		pthread_mutex_unlock(&args->start);
 	}
 	if (info->id % 2 == 0)
-		usleep(1500);
+		usleep(args->alive_time * 20);
 	act_loop(args, info);
 	return (0);
 }

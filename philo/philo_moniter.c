@@ -6,14 +6,37 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:17:42 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 18:23:16 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:40:09 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <unistd.h>
 
-int	all_philo_eat(t_args *args, int *i, int *eat_philo)
+int	check_end(t_philo_info *info, t_args *args)
+{
+	long	live;
+
+	live = get_time(0) - info->last_eat;
+	if (args->alive_time - live <= 0)
+	{
+		pthread_mutex_lock(&args->end);
+		if (args->end_flag)
+		{
+			pthread_mutex_unlock(&args->end);
+			return (1);
+		}
+		pthread_mutex_unlock(&args->end);
+		ft_printf(info, args, "died");
+		pthread_mutex_lock(&args->end);
+		args->end_flag = 1;
+		pthread_mutex_unlock(&args->end);
+		return (1);
+	}
+	return (0);
+}
+
+static int	all_philo_eat(t_args *args, int *i, int *eat_philo)
 {
 	if (*eat_philo == args->philo_num)
 	{
