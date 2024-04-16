@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:50:11 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 00:57:19 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 16:50:26 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,7 @@ int	init_philo_info(t_args *args, t_philo_info **info)
 		pthread_mutex_init(&((*info)[i].count), NULL);
 		i++;
 	}
+	if (init_mutex(args))
+		return (1);
 	return (0);
 }

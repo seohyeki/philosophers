@@ -6,14 +6,35 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 01:30:56 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:25:30 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+void	act_loop(t_args *args, t_philo_info *info)
+{
+	while (1)
+	{
+		pthread_mutex_lock(&args->end);
+		if (args->end_flag)
+		{
+			pthread_mutex_unlock(&args->end);
+			return ;
+		}
+		pthread_mutex_unlock(&args->end);
+		if (take_fork(info, args))
+		{
+			if (eating(info, args))
+				break ;
+			if (sleeping(info, args))
+				break ;
+			usleep(1500);
+		}
+	}
+}
 
 void	*acting(void *arg)
 {
@@ -34,61 +55,20 @@ void	*acting(void *arg)
 		pthread_mutex_unlock(&args->start);
 	}
 	if (info->id % 2 == 0)
-		usleep(500);
-	while (checking(info, args) == 0)
-	{
-		pthread_mutex_lock(&args->end);
-		if (args->end_flag)
-		{
-			pthread_mutex_unlock(&args->end);
-			return (0);
-		}
-		pthread_mutex_unlock(&args->end);
-		if (take_fork(info, args))
-		{
-			if (eating(info, args))
-				break ;
-			if (sleeping(info, args))
-				break ;
-			usleep(500);
-		}
-	}
+		usleep(1500);
+	act_loop(args, info);
 	return (0);
 }
 
-int	monitering(t_args *args, t_philo_info *info)
+int	finishing(t_args *args, t_philo_info **info)
 {
 	int	i;
-	int	eat_philo;
 
 	i = 0;
-	eat_philo = 0;
-	while (1)
+	while (i < args->philo_num)
 	{
-		pthread_mutex_lock(&args->end);
-		if (args->end_flag)
-		{
-			pthread_mutex_unlock(&args->end);
-			break ;
-		}
-		pthread_mutex_unlock(&args->end);
-		pthread_mutex_lock(&info[i].count);
-		if (info[i].eat_count >= args->must_eat)
-			eat_philo++;
-		pthread_mutex_unlock(&info[i].count);
+		pthread_join((*info)[i].thread, NULL);
 		i++;
-		if (i == args->philo_num)
-		{
-			if (eat_philo == args->philo_num)
-			{
-				pthread_mutex_lock(&args->end);
-				args->end_flag = 1;
-				pthread_mutex_unlock(&args->end);
-				return (0);
-			}
-			i = 0;
-			eat_philo = 0;
-		}
 	}
 	return (0);
 }
@@ -99,10 +79,9 @@ int	main(int argc, char **argv)
 	t_philo_info	*info;
 	int				i;
 
-	if ((argc != 5 && argc != 6)
-		|| init_args(&args, argc, argv) || init_philo_info(&args, &info))
+	if ((argc != 5 && argc != 6) || init_args(&args, argc, argv))
 		return (1);
-	if (init_mutex(&args))
+	if (init_philo_info(&args, &info))
 		return (1);
 	i = 0;
 	while (i < args.philo_num)
@@ -116,11 +95,7 @@ int	main(int argc, char **argv)
 	pthread_mutex_unlock(&args.start);
 	if (args.must_eat)
 		monitering(&args, info);
-	i = 0;
-	while (i < args.philo_num)
-	{
-		pthread_join(info[i].thread, NULL);
-		i++;
-	}
+	if (finishing(&args, &info))
+		return (1);
 	return (0);
 }

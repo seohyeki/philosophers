@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 01:26:50 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:01:32 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,15 @@ long	get_time(long t)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000) - t);
 }
 
-int	ft_sleep(t_philo_info *info, t_args *args, int act_time)
+int	ft_sleep(t_philo_info *info, t_args *args, long cur, int act_time)
 {
-	long	start_time;
-
-	start_time = get_time(0);
-	while (1)
+	while (checking(info, args) == 0)
 	{
-		if (checking(info, args))
-			return (1);
-		else if (get_time(0) - start_time >= act_time)
-			break ;
-		usleep(100);
+		if (get_time(0) - cur >= act_time)
+			return (0);
+		usleep(1500);
 	}
-	return (0);
+	return (1);
 }
 
 int	ft_memcmp(const void *s1, const void *s2, size_t n)

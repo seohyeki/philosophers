@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:39:29 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 01:31:26 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:43:35 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,10 @@ int	checking(t_philo_info *info, t_args *args)
 			return (1);
 		}
 		pthread_mutex_unlock(&args->end);
+		printing(info, args, "died");
 		pthread_mutex_lock(&args->end);
 		args->end_flag = 1;
 		pthread_mutex_unlock(&args->end);
-		pthread_mutex_lock(&args->printf);
-		printf("%ld %d %s\n", get_time(args->start_time), info->id, "died");
-		pthread_mutex_unlock(&args->printf);
 		return (1);
 	}
 	return (0);
@@ -80,16 +78,9 @@ int	take_fork(t_philo_info *info, t_args *args)
 
 int	eating(t_philo_info *info, t_args *args)
 {
-	pthread_mutex_lock(&args->end);
-	if (args->end_flag)
-	{
-		pthread_mutex_unlock(&args->end);
-		return (1);
-	}
-	pthread_mutex_unlock(&args->end);
 	info->last_eat = get_time(0);
 	printing(info, args, "is eating");
-	if (ft_sleep(info, args, args->eat_time))
+	if (ft_sleep(info, args, info->last_eat, args->eat_time))
 		return (1);
 	pthread_mutex_lock(&info->count);
 	info->eat_count++;
@@ -108,7 +99,7 @@ int	sleeping(t_philo_info *info, t_args *args)
 	if (checking(info, args))
 		return (1);
 	printing(info, args, "is sleeping");
-	if (ft_sleep(info, args, args->sleep_time))
+	if (ft_sleep(info, args, get_time(0), args->sleep_time))
 		return (1);
 	printing(info, args, "is thinking");
 	return (0);
