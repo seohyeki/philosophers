@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:43:58 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 17:58:04 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/18 00:31:54 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_args
 	long			sleep_time;
 	long			must_eat;
 	long			start_time;
+	unsigned int	usleep_time;
 	int				start_flag;
 	int				end_flag;
 	t_fork			*fork;

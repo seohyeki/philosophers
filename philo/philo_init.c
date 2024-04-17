@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:50:11 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 18:49:28 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:59:53 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ int	init_args(t_args *args, int argc, char **argv)
 	}
 	else
 		args->must_eat = 0;
+	args->usleep_time = 250;
+	if (args->philo_num >= 50)
+		args->usleep_time = 1000;
 	args->start_flag = 0;
 	args->end_flag = 0;
 	return (0);

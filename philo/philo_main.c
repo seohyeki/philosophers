@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 19:06:43 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:09:59 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*acting(void *arg)
 		pthread_mutex_unlock(&args->start);
 	}
 	if (info->id % 2 == 0)
-		usleep(150);
+		usleep(args->usleep_time);
 	routine(info, args);
 	return (0);
 }
@@ -58,18 +58,12 @@ int	finishing(t_args *args, t_philo_info **info)
 	return (0);
 }
 
-void	check_leak(void)
-{
-	system("leaks philo");
-}
-
 int	main(int argc, char **argv)
 {
 	t_args			args;
 	t_philo_info	*info;
 	int				i;
 
-	atexit(check_leak);
 	if ((argc != 5 && argc != 6) || init_args(&args, argc, argv))
 		return (1);
 	if (init_philo_info(&args, &info))

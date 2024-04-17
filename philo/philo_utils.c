@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 18:39:17 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:08:46 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	ft_usleep(t_philo_info *info, t_args *args, long cur, int act_time)
 	{
 		if (get_time(cur) >= act_time)
 			return (0);
-		usleep(150);
+		usleep(args->usleep_time);
 	}
 	return (1);
 }

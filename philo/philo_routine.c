@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:39:29 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 18:59:49 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:58:39 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,8 @@ void	routine(t_philo_info *info, t_args *args)
 				break ;
 			if (sleeping(info, args))
 				break ;
-			usleep(250);
+			usleep(args->usleep_time);
 		}
+		usleep(args->usleep_time);
 	}
 }
