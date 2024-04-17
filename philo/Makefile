@@ -6,7 +6,7 @@
 #    By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/17 18:38:57 by seohyeki          #+#    #+#              #
-#    Updated: 2024/04/16 18:34:38 by seohyeki         ###   ########.fr        #
+#    Updated: 2024/04/17 18:31:09 by seohyeki         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SRCS =	philo_init.c \
 		philo_utils.c \
 		philo_moniter.c
 OBJS = $(SRCS:.c=.o)
-CFLAGS = -Wall -Wextra -Werror -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror
 
 all : $(NAME)
 

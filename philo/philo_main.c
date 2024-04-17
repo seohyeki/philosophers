@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 18:00:24 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 19:06:43 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,21 @@ int	finishing(t_args *args, t_philo_info **info)
 	while (i < args->philo_num)
 	{
 		pthread_join((*info)[i].thread, NULL);
+		pthread_mutex_destroy(&args->fork[i].mutex);
+		pthread_mutex_destroy(&(*info)[i].count);
 		i++;
 	}
+	pthread_mutex_destroy(&args->printf);
+	pthread_mutex_destroy(&args->start);
+	pthread_mutex_destroy(&args->end);
+	free(args->fork);
+	free(*info);
 	return (0);
+}
+
+void	check_leak(void)
+{
+	system("leaks philo");
 }
 
 int	main(int argc, char **argv)
@@ -57,6 +69,7 @@ int	main(int argc, char **argv)
 	t_philo_info	*info;
 	int				i;
 
+	atexit(check_leak);
 	if ((argc != 5 && argc != 6) || init_args(&args, argc, argv))
 		return (1);
 	if (init_philo_info(&args, &info))
@@ -73,7 +86,6 @@ int	main(int argc, char **argv)
 	pthread_mutex_unlock(&args.start);
 	if (args.must_eat)
 		monitering(&args, info);
-	if (finishing(&args, &info))
-		return (1);
+	finishing(&args, &info);
 	return (0);
 }

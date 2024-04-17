@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:39:29 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 17:54:17 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:59:49 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,13 +109,12 @@ void	routine(t_philo_info *info, t_args *args)
 			{
 				if (take_fork_two(info, args))
 					break ;
-				usleep(10);
 			}
 			if (eating(info, args))
 				break ;
 			if (sleeping(info, args))
 				break ;
+			usleep(250);
 		}
-		usleep(250);
 	}
 }

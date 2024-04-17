@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:17:42 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 16:54:52 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:39:25 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	check_end(t_philo_info *info, t_args *args)
 		return (1);
 	}
 	pthread_mutex_unlock(&args->end);
-	if (args->alive_time <= get_time(info->last_eat))
+	if (args->alive_time < get_time(info->last_eat))
 	{
 		pthread_mutex_lock(&args->end);
 		if (args->end_flag == 0)
