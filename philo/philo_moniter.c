@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:17:42 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 18:40:09 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:54:52 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,24 @@
 
 int	check_end(t_philo_info *info, t_args *args)
 {
-	long	live;
-
-	live = get_time(0) - info->last_eat;
-	if (args->alive_time - live <= 0)
+	pthread_mutex_lock(&args->end);
+	if (args->end_flag)
+	{
+		info->last_eat = args->start_time;
+		pthread_mutex_unlock(&args->end);
+		return (1);
+	}
+	pthread_mutex_unlock(&args->end);
+	if (args->alive_time <= get_time(info->last_eat))
 	{
 		pthread_mutex_lock(&args->end);
-		if (args->end_flag)
+		if (args->end_flag == 0)
 		{
-			pthread_mutex_unlock(&args->end);
-			return (1);
+			pthread_mutex_lock(&args->printf);
+			printf("%ld %d %s\n", get_time(args->start_time), info->id, "died");
+			pthread_mutex_unlock(&args->printf);
+			args->end_flag = 1;
 		}
-		pthread_mutex_unlock(&args->end);
-		ft_printf(info, args, "died");
-		pthread_mutex_lock(&args->end);
-		args->end_flag = 1;
 		pthread_mutex_unlock(&args->end);
 		return (1);
 	}
@@ -74,7 +77,7 @@ int	monitering(t_args *args, t_philo_info *info)
 		if (i == args->philo_num)
 			if (all_philo_eat(args, &i, &eat_philo))
 				return (0);
-		usleep(10);
+		usleep(100);
 	}
 	return (0);
 }

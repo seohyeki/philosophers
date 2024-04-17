@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 18:56:22 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:43:38 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,9 @@ int	ft_usleep(t_philo_info *info, t_args *args, long cur, int act_time)
 	{
 		if (get_time(cur) >= act_time)
 			return (0);
-		usleep(1500);
+		usleep(150);
 	}
 	return (1);
-}
-
-int	ft_memcmp(const void *s1, const void *s2, size_t n)
-{
-	size_t			i;
-	unsigned char	*str1;
-	unsigned char	*str2;
-
-	if (s1 == s2 || n == 0)
-		return (0);
-	i = 0;
-	str1 = (unsigned char *)s1;
-	str2 = (unsigned char *)s2;
-	while ((str1[i] == str2[i]) && (i + 1 < n))
-		i++;
-	return (str1[i] - str2[i]);
 }
 
 void	ft_printf(t_philo_info *info, t_args *args, char *msg)
@@ -77,16 +61,4 @@ void	ft_printf(t_philo_info *info, t_args *args, char *msg)
 		printf("%ld %d %s\n", get_time(args->start_time), info->id, msg);
 	pthread_mutex_unlock(&args->end);
 	pthread_mutex_unlock(&args->printf);
-}
-
-void	ft_free(void **ptr, int n)
-{
-	int	i;
-
-	i = 0;
-	while (i < n)
-	{
-		free(ptr[i]);
-		i++;
-	}
 }

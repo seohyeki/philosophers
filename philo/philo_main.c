@@ -6,35 +6,13 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 19:05:57 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:00:24 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <unistd.h>
 #include <stdlib.h>
-
-void	act_loop(t_args *args, t_philo_info *info)
-{
-	while (1)
-	{
-		pthread_mutex_lock(&args->end);
-		if (args->end_flag)
-		{
-			pthread_mutex_unlock(&args->end);
-			return ;
-		}
-		pthread_mutex_unlock(&args->end);
-		if (take_fork(info, args))
-		{
-			if (eating(info, args))
-				break ;
-			if (sleeping(info, args))
-				break ;
-			usleep(args->alive_time * 20);
-		}
-	}
-}
 
 void	*acting(void *arg)
 {
@@ -55,8 +33,8 @@ void	*acting(void *arg)
 		pthread_mutex_unlock(&args->start);
 	}
 	if (info->id % 2 == 0)
-		usleep(args->alive_time * 20);
-	act_loop(args, info);
+		usleep(150);
+	routine(info, args);
 	return (0);
 }
 

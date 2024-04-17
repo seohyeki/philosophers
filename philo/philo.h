@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:43:58 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/16 18:57:34 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:58:04 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ typedef struct s_fork
 
 typedef struct s_args
 {
-	int				philo_num;
-	int				alive_time;
-	int				eat_time;
-	int				sleep_time;
-	int				must_eat;
+	long			philo_num;
+	long			alive_time;
+	long			eat_time;
+	long			sleep_time;
+	long			must_eat;
+	long			start_time;
 	int				start_flag;
 	int				end_flag;
-	long			start_time;
 	t_fork			*fork;
 	pthread_mutex_t	printf;
 	pthread_mutex_t	start;
@@ -51,22 +51,18 @@ typedef struct s_philo_info
 }				t_philo_info;
 
 /*utils*/
-int			ft_memcmp(const void *s1, const void *s2, size_t n);
 long long	ft_atoi(char *str);
 long		get_time(long t);
 int			ft_usleep(t_philo_info *info, t_args *args, long cur, int act_time);
 void		ft_printf(t_philo_info *info, t_args *args, char *msg);
-void	ft_free(void **ptr, int n);
 
 /*init*/
 int			init_args(t_args *args, int argc, char **argv);
 int			init_philo_info(t_args *args, t_philo_info **philo);
 
 /*routine*/
+void		routine(t_philo_info *info, t_args *args);
 int			monitering(t_args *args, t_philo_info *info);
 int			check_end(t_philo_info *info, t_args *args);
-int			take_fork(t_philo_info *info, t_args *args);
-int			eating(t_philo_info *info, t_args *args);
-int			sleeping(t_philo_info *info, t_args *args);
 
 #endif
