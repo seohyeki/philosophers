@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:39:29 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/18 01:58:39 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:32:06 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,11 @@ int	sleeping(t_philo_info *info, t_args *args)
 	if (ft_usleep(info, args, get_time(0), args->sleep_time))
 		return (1);
 	ft_printf(info, args, "is thinking");
+	if (args->eat_time - args->sleep_time)
+	{
+		if (ft_usleep(info, args, get_time(0), args->eat_time - args->sleep_time))
+			return (1);
+	}
 	return (0);
 }
 

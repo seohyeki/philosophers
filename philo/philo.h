@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:43:58 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/18 00:31:54 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:29:44 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_philo_info
 /*utils*/
 long long	ft_atoi(char *str);
 long		get_time(long t);
-int			ft_usleep(t_philo_info *info, t_args *args, long cur, int act_time);
+int			ft_usleep(t_philo_info *info, t_args *args, long cur, long act);
 void		ft_printf(t_philo_info *info, t_args *args, char *msg);
 
 /*init*/

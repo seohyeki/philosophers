@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/18 01:09:59 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/18 13:19:07 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,11 @@ int	finishing(t_args *args, t_philo_info **info)
 	while (i < args->philo_num)
 	{
 		pthread_join((*info)[i].thread, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < args->philo_num)
+	{
 		pthread_mutex_destroy(&args->fork[i].mutex);
 		pthread_mutex_destroy(&(*info)[i].count);
 		i++;
