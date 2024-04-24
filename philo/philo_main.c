@@ -6,13 +6,13 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:10:17 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/18 13:19:07 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:27:15 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void	*acting(void *arg)
 {
@@ -69,9 +69,9 @@ int	main(int argc, char **argv)
 	t_philo_info	*info;
 	int				i;
 
-	if ((argc != 5 && argc != 6) || init_args(&args, argc, argv))
+	if (argc != 5 && argc != 6)
 		return (1);
-	if (init_philo_info(&args, &info))
+	if (philo_init(&args, &info, argc, argv))
 		return (1);
 	i = 0;
 	while (i < args.philo_num)

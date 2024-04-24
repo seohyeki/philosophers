@@ -6,30 +6,41 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 22:30:18 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/19 16:16:53 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:24:40 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <sys/time.h>
-#include <unistd.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
 
-long long	ft_atoi(char *str)
+long	ft_atol(char *str)
 {
-	long long	num;
+	long	num;
+	int		sign;
 
 	num = 0;
+	sign = 1;
 	if (str == 0)
 		return (-1);
+	while (*str == 32 || (9 <= *str && *str <= 13))
+		str++;
+	if (*str == '+' || *str == '-')
+	{
+		if (*str++ == '-')
+			sign *= -1;
+		if (*str < '0' || '9' < *str)
+			return (-1);
+	}
 	while (*str)
 	{
 		if (*str < '0' || '9' < *str)
 			return (-1);
-		num = num * 10 + *str - '0';
-		if (num > 2147483647)
+		num = num * 10 + *str++ - '0';
+		if (num * sign < 0 || num * sign > 2147483647)
 			return (-1);
-		str++;
 	}
 	return (num);
 }

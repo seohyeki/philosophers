@@ -6,11 +6,12 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:17:42 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/17 18:39:25 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/24 13:51:21 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <stdio.h>
 #include <unistd.h>
 
 int	check_end(t_philo_info *info, t_args *args)
@@ -77,7 +78,7 @@ int	monitering(t_args *args, t_philo_info *info)
 		if (i == args->philo_num)
 			if (all_philo_eat(args, &i, &eat_philo))
 				return (0);
-		usleep(100);
+		usleep(50);
 	}
 	return (0);
 }

@@ -6,13 +6,13 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 15:39:29 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/19 16:32:06 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/24 13:51:34 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 
 int	take_fork_one(t_philo_info *info, t_args *args)
 {
@@ -87,18 +87,25 @@ int	eating(t_philo_info *info, t_args *args)
 	pthread_mutex_lock(&args->fork[info->right].mutex);
 	args->fork[info->right].used = 0;
 	pthread_mutex_unlock(&args->fork[info->right].mutex);
+	if (check_end(info, args))
+		return (1);
 	return (0);
 }
 
 int	sleeping(t_philo_info *info, t_args *args)
 {
+	long	think_time;
+
+	if (check_end(info, args))
+		return (1);
 	ft_printf(info, args, "is sleeping");
 	if (ft_usleep(info, args, get_time(0), args->sleep_time))
 		return (1);
 	ft_printf(info, args, "is thinking");
-	if (args->eat_time - args->sleep_time)
+	think_time = args->eat_time - args->sleep_time;
+	if (think_time)
 	{
-		if (ft_usleep(info, args, get_time(0), args->eat_time - args->sleep_time))
+		if (ft_usleep(info, args, get_time(0), think_time))
 			return (1);
 	}
 	return (0);
@@ -114,12 +121,13 @@ void	routine(t_philo_info *info, t_args *args)
 			{
 				if (take_fork_two(info, args))
 					break ;
+				usleep(args->usleep_time);
 			}
 			if (eating(info, args))
 				break ;
 			if (sleeping(info, args))
 				break ;
-			usleep(args->usleep_time);
+			usleep(100);
 		}
 		usleep(args->usleep_time);
 	}

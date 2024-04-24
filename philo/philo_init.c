@@ -6,26 +6,25 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:50:11 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/18 13:03:49 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:28:34 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <pthread.h>
 #include <stdlib.h>
 
-int	init_args(t_args *args, int argc, char **argv)
+static int	init_args(t_args *args, int argc, char **argv)
 {
-	args->philo_num = (int)ft_atoi(argv[1]);
-	args->alive_time = (int)ft_atoi(argv[2]);
-	args->eat_time = (int)ft_atoi(argv[3]);
-	args->sleep_time = (int)ft_atoi(argv[4]);
+	args->philo_num = (int)ft_atol(argv[1]);
+	args->alive_time = ft_atol(argv[2]);
+	args->eat_time = ft_atol(argv[3]);
+	args->sleep_time = ft_atol(argv[4]);
 	if (args->philo_num <= 0 || args->alive_time < 0
 		|| args->eat_time < 0 || args->sleep_time < 0)
 		return (1);
 	if (argc == 6)
 	{
-		args->must_eat = (int)ft_atoi(argv[5]);
+		args->must_eat = ft_atol(argv[5]);
 		if (args->must_eat <= 0)
 			return (1);
 	}
@@ -43,9 +42,6 @@ static int	init_mutex(t_args *args)
 {
 	int	i;
 
-	pthread_mutex_init(&args->printf, NULL);
-	pthread_mutex_init(&args->end, NULL);
-	pthread_mutex_init(&args->start, NULL);
 	args->fork = (t_fork *)malloc(sizeof(t_fork) * (args->philo_num));
 	if (!args->fork)
 		return (1);
@@ -56,10 +52,13 @@ static int	init_mutex(t_args *args)
 		args->fork[i].used = 0;
 		i++;
 	}
+	pthread_mutex_init(&args->printf, NULL);
+	pthread_mutex_init(&args->end, NULL);
+	pthread_mutex_init(&args->start, NULL);
 	return (0);
 }
 
-int	init_philo_info(t_args *args, t_philo_info **info)
+static int	init_philo_info(t_args *args, t_philo_info **info)
 {
 	int	i;
 
@@ -77,9 +76,25 @@ int	init_philo_info(t_args *args, t_philo_info **info)
 		pthread_mutex_init(&((*info)[i].count), NULL);
 		i++;
 	}
+	return (0);
+}
+
+int	philo_init(t_args *args, t_philo_info **info, int ac, char **av)
+{
+	int	i;
+
+	if (init_args(args, ac, av))
+		return (1);
+	if (init_philo_info(args, info))
+		return (1);
 	if (init_mutex(args))
 	{
-		pthread_mutex_destroy(&((*info)[i].count));
+		i = 0;
+		while (i < args->philo_num)
+		{
+			pthread_mutex_destroy(&((*info)[i].count));
+			i++;
+		}
 		free(*info);
 		return (1);
 	}

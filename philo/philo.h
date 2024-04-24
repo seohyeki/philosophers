@@ -6,7 +6,7 @@
 /*   By: seohyeki <seohyeki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 20:43:58 by seohyeki          #+#    #+#             */
-/*   Updated: 2024/04/19 16:29:44 by seohyeki         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:26:52 by seohyeki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define PHILO_H
 
 # include <pthread.h>
-# include <stdio.h>
 
 typedef struct s_fork
 {
@@ -24,7 +23,7 @@ typedef struct s_fork
 
 typedef struct s_args
 {
-	long			philo_num;
+	int				philo_num;
 	long			alive_time;
 	long			eat_time;
 	long			sleep_time;
@@ -52,18 +51,19 @@ typedef struct s_philo_info
 }				t_philo_info;
 
 /*utils*/
-long long	ft_atoi(char *str);
-long		get_time(long t);
-int			ft_usleep(t_philo_info *info, t_args *args, long cur, long act);
-void		ft_printf(t_philo_info *info, t_args *args, char *msg);
+long	ft_atol(char *str);
+long	get_time(long t);
+int		ft_usleep(t_philo_info *info, t_args *args, long cur, long act);
+void	ft_printf(t_philo_info *info, t_args *args, char *msg);
 
 /*init*/
-int			init_args(t_args *args, int argc, char **argv);
-int			init_philo_info(t_args *args, t_philo_info **philo);
+int		philo_init(t_args *args, t_philo_info **info, int ac, char **av);
 
 /*routine*/
-void		routine(t_philo_info *info, t_args *args);
-int			monitering(t_args *args, t_philo_info *info);
-int			check_end(t_philo_info *info, t_args *args);
+void	routine(t_philo_info *info, t_args *args);
+
+/*monitering*/
+int		monitering(t_args *args, t_philo_info *info);
+int		check_end(t_philo_info *info, t_args *args);
 
 #endif
